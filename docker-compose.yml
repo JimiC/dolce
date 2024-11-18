@@ -1,0 +1,14 @@
+services:
+  importantservice: 
+    restart: unless-stopped
+    image: "alpine:latest"
+    container_name: "important-service"
+    command: "sleep 1; exit 0;"
+
+  dolce:
+    restart: unless-stopped
+    image: dolce:latest
+    container_name: dolce
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    env_file: .env    
