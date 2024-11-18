@@ -1,16 +1,22 @@
-FROM denoland/deno:1.46.3
+FROM denoland/deno:alpine-1.46.3
 
-ENV DOLCE_CUSTOM_TEMPLATE_PATH /var/dolce-custom-templates/
+RUN apk update \
+&& apk add --no-cache curl \
+&& rm -f /var/cache/apk/*
+
+ENV DOLCE_CUSTOM_TEMPLATE_PATH=/var/dolce-custom-templates/
 
 WORKDIR /dolce
 
 COPY . .
 
 RUN mkdir -p /var/run/dolce
+
 # Compile the main app so that it doesn't need to be compiled each startup/entry.
 RUN deno cache main.ts lib/*.ts
 
 ENTRYPOINT []
+SHELL ["/bin/sh", "-c"]
 CMD deno run \
 # flag is needed for Deno.connect to a Unix Socket (lib/universal-http.ts)
     --unstable-http \
